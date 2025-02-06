@@ -1,0 +1,50 @@
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  #root {
+    @apply h-full;
+  }
+
+  html,
+  body {
+    @apply h-full;
+
+    @apply font-mono antialiased;
+
+    @apply overflow-hidden;
+
+    line-height: 1.1;
+    margin-top: 3px;
+    margin-bottom: 2 px;
+    font-size: 12 px;
+  }
+
+  button {
+    -webkit-app-region: no-drag;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-[#555] rounded-md;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  /* styles.css */
+  .color-input-circle {
+    width: 2.5rem; /* Adjust width and height as needed */
+    height: 2.5rem;
+    cursor: pointer;
+  }
+
+  .color-input-circle::-webkit-color-swatch {
+    border-radius: 50%; /* Ensure the inner swatch is circular */
+  }
+}
