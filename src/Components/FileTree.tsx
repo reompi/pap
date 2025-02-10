@@ -197,16 +197,12 @@ const FileTree: React.FC = () => {
         folderId: folderId,
       };
 
-      const response = await axios.post(
-        "http://localhost:5045/api/notes",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.post("http://localhost:5045/api/notes", payload, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setNewNoteHeading("");
       setShowNewNoteInput(false);

@@ -23,7 +23,7 @@ const EditorRenderer: React.FC<EditorRendererProps> = ({ content }) => {
       TextStyle,
       FontSize,
       Color.configure({ types: ["textStyle"] }),
-      Image,
+      Image as any,
       HandlePasteImage,
     ],
     content,

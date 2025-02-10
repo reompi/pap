@@ -69,7 +69,7 @@ const TiptapEditor: React.FC = () => {
       TextStyle,
       FontSize,
       Color.configure({ types: ["textStyle"] }),
-      Image,
+      Image as any,
       HandlePasteImage,
     ],
     content: "<p></p>",
