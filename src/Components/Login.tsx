@@ -25,10 +25,16 @@ const LoginForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5045/api/Users/login",
+        "https://apiptpgapi.azure-api.net/api/Users/login",
         {
           username: username,
           password: password,
+        },
+        {
+          headers: {
+            "Ocp-Apim-Subscription-Key":
+              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
+          },
         }
       );
 

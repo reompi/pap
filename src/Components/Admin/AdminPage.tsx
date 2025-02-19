@@ -16,11 +16,16 @@ const AdminPage: React.FC = () => {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5045/api/Users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://apiptpgapi.azure-api.net/api/Users",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Ocp-Apim-Subscription-Key":
+              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
+          },
+        }
+      );
       setUsers(response.data); // Assuming your API returns a list of users
     } catch (error) {
       setError("Failed to fetch users.");
