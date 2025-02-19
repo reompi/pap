@@ -51,12 +51,10 @@ const FileTree: React.FC = () => {
   const fetchFoldersAndNotes = async () => {
     try {
       const folderResponse = await axios.get<ApiResponse>(
-        "https://apiptpgapi.azure-api.net/api/folders",
+        "http://localhost:5045/api/folders",
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Ocp-Apim-Subscription-Key":
-              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
           },
         }
       );
@@ -64,12 +62,10 @@ const FileTree: React.FC = () => {
 
       // Accessing the notes array from the response object
       const notesResponse = await axios.get<NotesApiResponse>(
-        "https://apiptpgapi.azure-api.net/api/notes",
+        "http://localhost:5045/api/notes",
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Ocp-Apim-Subscription-Key":
-              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
           },
         }
       );
@@ -201,12 +197,10 @@ const FileTree: React.FC = () => {
         folderId: folderId,
       };
 
-      await axios.post("https://apiptpgapi.azure-api.net/api/notes", payload, {
+      await axios.post("http://localhost:5045/api/notes", payload, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-          "Ocp-Apim-Subscription-Key":
-            process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
         },
       });
 
@@ -239,7 +233,7 @@ const FileTree: React.FC = () => {
 
     try {
       await axios.post(
-        "https://apiptpgapi.azure-api.net/api/folders",
+        "http://localhost:5045/api/folders",
         {
           name: newFolderName,
           parentFolderId: parentFolderId,
@@ -247,8 +241,6 @@ const FileTree: React.FC = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`, // Include the token in the request
-            "Ocp-Apim-Subscription-Key":
-              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
           },
         }
       );
@@ -272,24 +264,12 @@ const FileTree: React.FC = () => {
     try {
       if (selectedFolder !== null) {
         await axios.delete(
-          `https://apiptpgapi.azure-api.net/api/folders/${selectedFolder.folderId}`,
-          {
-            headers: {
-              "Ocp-Apim-Subscription-Key":
-                process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
-            },
-          }
+          `http://localhost:5045/api/folders/${selectedFolder.folderId}`
         );
         setSelectedFolder(null);
       } else if (selectedItem !== null) {
         await axios.delete(
-          `https://apiptpgapi.azure-api.net/api/notes/${selectedItem.id}`,
-          {
-            headers: {
-              "Ocp-Apim-Subscription-Key":
-                process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
-            },
-          }
+          `http://localhost:5045/api/notes/${selectedItem.id}`
         );
         setSelectedItem(null);
       }
@@ -407,15 +387,13 @@ const FileTree: React.FC = () => {
   ) => {
     try {
       await axios.put(
-        `https://apiptpgapi.azure-api.net/api/folders/${folderId}`,
+        `http://localhost:5045/api/folders/${folderId}`,
         {
           parentFolderId,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Ocp-Apim-Subscription-Key":
-              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
           },
         }
       );
@@ -427,15 +405,13 @@ const FileTree: React.FC = () => {
   const updateNoteFolder = async (noteId: number, folderId: number | null) => {
     try {
       await axios.put(
-        `https://apiptpgapi.azure-api.net/api/notes/f${noteId}`,
+        `http://localhost:5045/api/notes/f${noteId}`,
         {
           folderId,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Ocp-Apim-Subscription-Key":
-              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
           },
         }
       );
@@ -528,13 +504,8 @@ const FileTree: React.FC = () => {
 
       console.log("Updating privacy status for note:", note.id);
       const response = await axios.put(
-        `https://apiptpgapi.azure-api.net/api/notes/${note.id}/privacy`,
-        {
-          headers: {
-            "Ocp-Apim-Subscription-Key":
-              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
-          },
-        },
+        `http://localhost:5045/api/notes/${note.id}/privacy`,
+        {},
         config
       );
       // You may want to update the note's privacy state locally here, if necessary

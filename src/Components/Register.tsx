@@ -22,24 +22,15 @@ const RegisterForm: React.FC = () => {
     }
 
     try {
-      await axios.post(
-        "https://apiptpgapi.azure-api.net/api/users",
-        {
-          Username: username,
-          Password: password,
-          Email: email,
-          Bio: "",
-          FullName: "",
-          ProfilePictureData: "",
-        },
-        {
-          headers: {
-            "Ocp-Apim-Subscription-Key":
-              process.env.REACT_APP_APIM_SUBSCRIPTION_KEY,
-          },
-        }
-      );
-      setSuccess("Utilizador registado com sucesso!");
+      await axios.post("http://localhost:5045/api/users", {
+        Username: username,
+        Password: password,
+        Email: email,
+        Bio: "",
+        FullName: "",
+        ProfilePictureData: "",
+      });
+      setSuccess("Utilizador registado com successo!");
     } catch (error) {
       setError(
         "Falha ao registar utilizador, nome de utilizador ou email já em uso."
