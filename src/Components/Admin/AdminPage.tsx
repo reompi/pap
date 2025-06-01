@@ -1,74 +1,70 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+// src/pages/AdminPage.tsx
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 const AdminPage: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const hasMore = useRef(true); // Keep track of whether there are more users to load
-
-  const fetchUsers = useCallback(async () => {
-    if (!hasMore.current || loading) return;
-
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:5045/api/Users?page=${page}&pageSize=10`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.data.length === 0) {
-        hasMore.current = false; // No more users to load
-      } else {
-        setUsers((prevUsers) => [...prevUsers, ...response.data]); // Append new users
-        setPage((prevPage) => prevPage + 1); // Increment page
-      }
-    } catch (error) {
-      setError("Failed to fetch users.");
-      console.error(error);
-    }
-    setLoading(false);
-  }, [page, loading]);
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  // Handle infinite scroll
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastUserRef = useCallback(
-    (node: HTMLTableRowElement | null) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore.current) {
-          fetchUsers();
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [loading, fetchUsers]
-  );
-
-  const handleDeleteUser = async (userId: number) => {
+  const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5045/api/Users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get("https://localhost:7187/api/Users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      setUsers(response.data); // Assuming your API returns a list of users
+    } catch (error) {
+      setError("Failed to fetch users.");
+    }
+  };
+
+  const handleDeleteUser = async (userId: number) => {
+    const confirmed = window.confirm(
+      "Tem a certeza que quer apagar esta anotação?"
+    );
+    if (!confirmed) return;
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`https://localhost:7187/api/Users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUsers(users.filter((user) => user.id !== userId)); // Remove deleted user from state
     } catch (error) {
       setError("Failed to delete user.");
       console.error(error);
     }
   };
+const handleUserAdmin = async (userId: number) => {
+  const confirmed = window.confirm(
+    "Tem a certeza que quer tornar este utilizador administrador?"
+  );
+  if (!confirmed) return;
+  try {
+    const token = localStorage.getItem("token");
+    await axios.put(
+      `https://localhost:7187/api/Users/${userId}/makeAdmin`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // Optionally, you can refetch users or update the state to reflect the change
+    fetchUsers();
+  } catch (error) {
+    setError("Failed to make user an admin.");
+    console.error(error);
+  }}
 
   return (
     <div className="container mx-auto p-4 bg-gray-100">
@@ -78,8 +74,10 @@ const AdminPage: React.FC = () => {
           {error}
         </p>
       )}
-
-      {/* Menu */}
+      <Link to="/" className="text-blue-600 hover:underline mb-4 block">
+        Voltar
+      </Link>
+       {/* Menu */}
       <nav className="mb-4 flex space-x-4">
         <Link to="/" className="text-blue-600 hover:underline">
           Voltar
@@ -94,7 +92,6 @@ const AdminPage: React.FC = () => {
           Anotações
         </Link>
       </nav>
-
       <h2 className="text-xl font-semibold mb-2">Gestão de utilizador</h2>
       <table className="min-w-full bg-white border border-gray-300 mb-8">
         <thead>
@@ -107,29 +104,37 @@ const AdminPage: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
-            <tr
-              key={user.id}
-              ref={index === users.length - 1 ? lastUserRef : null}
-            >
+          {users.map((user) => (
+            <tr key={user.id}>
               <td className="border px-4 py-2">{user.id}</td>
               <td className="border px-4 py-2">{user.username}</td>
               <td className="border px-4 py-2">{user.email}</td>
-              <td className="border px-4 py-2">{user.role}</td>
               <td className="border px-4 py-2">
-                <button
-                  onClick={() => handleDeleteUser(user.id)}
-                  className="text-red-600 hover:underline"
-                >
-                  Apagar
-                </button>
+                {user.role === "admin" ? (
+                  <span className="font-semibold text-green-700">{user.role}</span>
+                ) : (
+                  <button
+                    onClick={() => handleUserAdmin(user.id)}
+                    className="text-black-600 underline hover:text-blue-800"
+                  >
+                    {user.role}
+                  </button>
+                )}
+              </td>
+              <td className="border px-4 py-2">
+                {user.role !== "admin" && (
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    className="text-red-600 underline hover:text-red-800"
+                  >
+                    Apagar
+                  </button>
+                )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-
-      {loading && <p className="text-center">Carregando...</p>}
     </div>
   );
 };

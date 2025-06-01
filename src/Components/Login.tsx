@@ -44,7 +44,7 @@ const LoginForm: React.FC = () => {
 
         // Redirect based on role
         if (role === "admin") {
-          navigate("/adminpage"); // Redirect to admin page
+          navigate("/admin/utilizadores"); // Redirect to admin page
         } else {
           navigate("/feed"); // Redirect to user feed
         }

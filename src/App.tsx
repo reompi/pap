@@ -8,7 +8,7 @@ import { Sidebar } from "./Components/AppLayout";
 import Editor from "./Components/TipTap/TipTap";
 import "./assets/index.css";
 import AdminPage from "./Components/Admin/AdminPage";
-
+import AdminNotes from "./Components/Admin/GestãoDeAnotacoes";
 const App: React.FC = () => {
   const [isFileTreeOpen, setIsFileTreeOpen] = useState(false);
 
@@ -34,10 +34,18 @@ const App: React.FC = () => {
           }
         />
         <Route
-          path="/adminpage"
+          path="/admin/utilizadores"
           element={
             <div className="flex h-screen container mx-auto p-4 overflow-x-auto max-w-full bg-gray-100">
               <AdminPage />
+            </div>
+          }
+        />
+                <Route
+          path="/admin/anotacoes"
+          element={
+            <div className="flex h-screen container mx-auto p-4 overflow-x-auto max-w-full bg-gray-100">
+              <AdminNotes />
             </div>
           }
         />

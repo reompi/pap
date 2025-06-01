@@ -1,53 +1,31 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 const GestaoDeAnotacoes: React.FC = () => {
   const [notes, setNotes] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     fetchNotes();
-  }, [page]);
+  }, []);
 
   const fetchNotes = async () => {
-    if (isLoading) return;
-    setIsLoading(true);
-
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(`https://localhost:7187/api/Notes`, {
-        params: { page, limit: 10 },
         headers: { Authorization: `Bearer ${token}` },
       });
-
       setNotes((prevNotes) => [...prevNotes, ...response.data.notes]);
-      setHasMore(response.data.notes.length > 0);
     } catch (error) {
       setError("Erro ao buscar anotações.");
-      console.error(error);
     }
-
-    setIsLoading(false);
-  };
-
-  const lastNoteRef = (node: HTMLTableRowElement | null) => {
-    if (isLoading || !hasMore) return;
-    if (observer.current) observer.current.disconnect();
-
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setPage((prevPage) => prevPage + 1);
-      }
-    });
-
-    if (node) observer.current.observe(node);
   };
   const handleDeleteNote = async (noteId: number) => {
+    const confirmed = window.confirm(
+      "Tem a certeza que quer apagar esta anotação?"
+    );
+    if (!confirmed) return;
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`https://localhost:7187/api/Notes/${noteId}`, {
@@ -57,7 +35,7 @@ const GestaoDeAnotacoes: React.FC = () => {
       });
       setNotes(notes.filter((note) => note.id !== noteId)); // Remove deleted note from state
     } catch (error) {
-      setError("Failed to delete note.");
+      setError("Falha ao apagar.");
       console.error(error);
     }
   };
@@ -99,10 +77,9 @@ const GestaoDeAnotacoes: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {notes.map((note, index) => (
+          {notes.map((note) => (
             <tr
               key={note.id}
-              ref={index === notes.length - 1 ? lastNoteRef : null}
             >
               <td className="border px-4 py-2">{note.id}</td>
               <td className="border px-4 py-2">{note.heading}</td>
@@ -113,7 +90,7 @@ const GestaoDeAnotacoes: React.FC = () => {
               <td className="border px-4 py-2">
                 <button
                   onClick={() => handleDeleteNote(note.id)}
-                  className="text-red-600 hover:underline"
+                  className="text-red-600 underline hover:text-red-800"
                 >
                   Apagar
                 </button>
@@ -122,10 +99,6 @@ const GestaoDeAnotacoes: React.FC = () => {
           ))}
         </tbody>
       </table>
-      {isLoading && <p className="text-center mt-4">Carregando...</p>}
-      {!hasMore && (
-        <p className="text-center mt-1">Todas as notas carregadas.</p>
-      )}
       <div className="mt-10"></div>
     </div>
   );
