@@ -74,9 +74,6 @@ const handleUserAdmin = async (userId: number) => {
           {error}
         </p>
       )}
-      <Link to="/" className="text-blue-600 hover:underline mb-4 block">
-        Voltar
-      </Link>
        {/* Menu */}
       <nav className="mb-4 flex space-x-4">
         <Link to="/" className="text-blue-600 hover:underline">
