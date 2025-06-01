@@ -123,6 +123,10 @@ const Feed: React.FC = () => {
       );
   
       // Fetch usernames for each note
+      if (!response.data || !Array.isArray(response.data) || response.data.length === 0) {
+        setNotes([]);
+        return;
+      }
       const notesData = await Promise.all(
         response.data.map(async (note: any) => {
           console.log("Note:", note);

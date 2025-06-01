@@ -61,7 +61,7 @@ const FileTree: React.FC = () => {
 
       // Accessing the notes array from the response object
       const notesResponse = await axios.get<NotesApiResponse>(
-        "https://localhost:7187/api/notes",
+        "https://localhost:7187/api/notes/mine",
         {
           headers: {
             Authorization: `Bearer ${token}`,
