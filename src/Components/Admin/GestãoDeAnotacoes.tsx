@@ -20,7 +20,7 @@ const GestaoDeAnotacoes: React.FC = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`http://localhost:5045/api/Notes`, {
+      const response = await axios.get(`https://localhost:7187/api/Notes`, {
         params: { page, limit: 10 },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -50,7 +50,7 @@ const GestaoDeAnotacoes: React.FC = () => {
   const handleDeleteNote = async (noteId: number) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5045/api/Notes/${noteId}`, {
+      await axios.delete(`https://localhost:7187/api/Notes/${noteId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
