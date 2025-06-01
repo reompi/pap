@@ -32,7 +32,6 @@ const RegisterForm: React.FC = () => {
       });
       setSuccess("Utilizador registado com successo!");
     } catch (error) {
-      console.log("Error registering user:", error);
       setError(
         "Falha ao registar utilizador, nome de utilizador ou email já em uso."
       );

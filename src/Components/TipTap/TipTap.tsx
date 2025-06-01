@@ -84,18 +84,15 @@ const TiptapEditor: React.FC = () => {
   // Fetch the existing note when the component mounts
   useEffect(() => {
     const fetchNote = async () => {
-      console.log("Fetching note..."); // Log before axios call
       try {
         const response = await axios.get(
           `https://localhost:7187/api/notes/${noteId}`
         );
-        console.log("oi");
         const { heading, body } = response.data;
 
         editorHeading?.commands.setContent(heading);
         editorBody?.commands.setContent(body);
         setIsLoaded(true);
-        console.log("Note fetched successfully!");
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.error("Server responded with:", error.response?.data);
@@ -196,7 +193,7 @@ const TiptapEditor: React.FC = () => {
       setTimeout(() => setSuccess(""), 4000);
     } catch (error) {
       console.error("Error saving note:", error);
-      setError("Failed to save!");
+      setError("Falha ao guardar!");
       setSuccess("");
       setTimeout(() => setError(""), 4000);
     }

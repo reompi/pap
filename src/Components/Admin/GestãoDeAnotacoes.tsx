@@ -63,6 +63,9 @@ const GestaoDeAnotacoes: React.FC = () => {
           <Link to="/admin/anotacoes" className="text-blue-900 hover:underline">
             Anotações
           </Link>
+                          <Link to="/feed" className="text-blue-600 hover:underline">
+                    App
+                  </Link>
         </nav>
       </div>
       <h2 className="text-xl font-semibold mb-2">Gestão de anotações</h2>

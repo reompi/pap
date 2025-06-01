@@ -21,7 +21,7 @@ const AdminPage: React.FC = () => {
       });
       setUsers(response.data); // Assuming your API returns a list of users
     } catch (error) {
-      setError("Failed to fetch users.");
+      setError("Falha ao pesquisar utilizador.");
     }
   };
 
@@ -39,7 +39,7 @@ const AdminPage: React.FC = () => {
       });
       setUsers(users.filter((user) => user.id !== userId)); // Remove deleted user from state
     } catch (error) {
-      setError("Failed to delete user.");
+      setError("Falha ao apagar utilizador.");
       console.error(error);
     }
   };
@@ -62,7 +62,7 @@ const handleUserAdmin = async (userId: number) => {
     // Optionally, you can refetch users or update the state to reflect the change
     fetchUsers();
   } catch (error) {
-    setError("Failed to make user an admin.");
+    setError("Falhar ao fazer utiliador admin.");
     console.error(error);
   }}
 
@@ -87,6 +87,9 @@ const handleUserAdmin = async (userId: number) => {
         </Link>
         <Link to="/admin/anotacoes" className="text-blue-600 hover:underline">
           Anotações
+        </Link>
+                <Link to="/feed" className="text-blue-600 hover:underline">
+          App
         </Link>
       </nav>
       <h2 className="text-xl font-semibold mb-2">Gestão de utilizador</h2>

@@ -12,6 +12,8 @@ interface Note {
   createdAt: string;
   isLiked: boolean;
   isDisliked: boolean;
+  userId: number;
+  username?: string;
 }
 
 const Feed: React.FC = () => {
@@ -119,18 +121,40 @@ const Feed: React.FC = () => {
           },
         }
       );
-
-      const notesData = response.data.map((note: any) => ({
-        id: note.id,
-        heading: note.heading,
-        body: note.body,
-        likesCount: note.likesCount,
-        dislikesCount: note.dislikesCount,
-        createdAt: note.createdAt,
-        isLiked: note.isLiked || false,
-        isDisliked: note.isDisliked || false,
-      }));
-
+  
+      // Fetch usernames for each note
+      const notesData = await Promise.all(
+        response.data.map(async (note: any) => {
+          console.log("Note:", note);
+          let userId = note.userId; // Default to 0 
+          let username = "";
+          try {
+            const userRes = await axios.get(
+              `https://localhost:7187/api/users/${userId}/username`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            username = userRes.data;
+          } catch {
+            username = "Desconhecido";
+          }
+          return {
+            id: note.id,
+            heading: note.heading,
+            body: note.body,
+            likesCount: note.likesCount,
+            dislikesCount: note.dislikesCount,
+            createdAt: note.createdAt,
+            isLiked: note.isLiked || false,
+            isDisliked: note.isDisliked || false,
+            userId: userId, // Garante que userId está sempre presente
+            username,
+          };
+        })
+      );
       setNotes(notesData);
     } catch (error) {
       setError("Error fetching notes.");
@@ -267,6 +291,9 @@ const Feed: React.FC = () => {
             onDoubleClick={() => handleNoteDoubleClick(note)}
           >
             <h2 className="text-xl font-bold">{note.heading}</h2>
+            <p className="text-sm text-gray-500 mb-1">
+              Por: {note.username || "Desconhecido"}
+            </p>
             <div
               ref={(el) => (contentRefs.current[note.id] = el)} // Set ref for each note
               className="relative overflow-hidden transition-all duration-300 max-h-32"

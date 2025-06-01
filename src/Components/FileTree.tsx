@@ -58,7 +58,6 @@ const FileTree: React.FC = () => {
           },
         }
       );
-      console.log("folderResponse :", folderResponse.data); // Log the response
 
       // Accessing the notes array from the response object
       const notesResponse = await axios.get<NotesApiResponse>(
@@ -70,7 +69,6 @@ const FileTree: React.FC = () => {
         }
       );
 
-      console.log("Notes Response:", notesResponse.data); // Log the response
 
       const nestedFolders = nestFolders(
         folderResponse.data.folders || [],
@@ -83,7 +81,7 @@ const FileTree: React.FC = () => {
       );
       setError("");
     } catch (err) {
-      setError("Failed to load folders and notes");
+      setError("Falha ao buscar pastas e anotações.");
       console.error(err);
     }
   };
@@ -211,7 +209,7 @@ const FileTree: React.FC = () => {
       await fetchFoldersAndNotes();
     } catch (error) {
       console.error("Error creating note:", error);
-      setError("Failed to create the note.");
+      setError("Falha ao criar nota.");
     }
   };
 
@@ -257,7 +255,7 @@ const FileTree: React.FC = () => {
 
   const handleDeleteItem = async () => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this item?"
+      "Tem a certeza que quer apagar?"
     );
     if (!confirmDelete) return;
 
@@ -502,7 +500,6 @@ const FileTree: React.FC = () => {
         },
       };
 
-      console.log("Updating privacy status for note:", note.id);
       const response = await axios.put(
         `https://localhost:7187/api/notes/${note.id}/privacy`,
         {},
@@ -532,7 +529,6 @@ const FileTree: React.FC = () => {
           }`}
           onClick={() => {
             if (selectedItem) {
-              console.log("Toggling privacy for note:", selectedItem.id);
               handlePrivacy(selectedItem);
             }
           }}
