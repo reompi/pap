@@ -51,7 +51,7 @@ const FileTree: React.FC = () => {
   const fetchFoldersAndNotes = async () => {
     try {
       const folderResponse = await axios.get<ApiResponse>(
-        "http://localhost:5045/api/folders",
+        "https://localhost:7187/api/folders",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ const FileTree: React.FC = () => {
 
       // Accessing the notes array from the response object
       const notesResponse = await axios.get<NotesApiResponse>(
-        "http://localhost:5045/api/notes",
+        "https://localhost:7187/api/notes",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -197,7 +197,7 @@ const FileTree: React.FC = () => {
         folderId: folderId,
       };
 
-      await axios.post("http://localhost:5045/api/notes", payload, {
+      await axios.post("https://localhost:7187/api/notes", payload, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -233,7 +233,7 @@ const FileTree: React.FC = () => {
 
     try {
       await axios.post(
-        "http://localhost:5045/api/folders",
+        "https://localhost:7187/api/folders",
         {
           name: newFolderName,
           parentFolderId: parentFolderId,
@@ -264,12 +264,12 @@ const FileTree: React.FC = () => {
     try {
       if (selectedFolder !== null) {
         await axios.delete(
-          `http://localhost:5045/api/folders/${selectedFolder.folderId}`
+          `https://localhost:7187/api/folders/${selectedFolder.folderId}`
         );
         setSelectedFolder(null);
       } else if (selectedItem !== null) {
         await axios.delete(
-          `http://localhost:5045/api/notes/${selectedItem.id}`
+          `https://localhost:7187/api/notes/${selectedItem.id}`
         );
         setSelectedItem(null);
       }
@@ -387,7 +387,7 @@ const FileTree: React.FC = () => {
   ) => {
     try {
       await axios.put(
-        `http://localhost:5045/api/folders/${folderId}`,
+        `https://localhost:7187/api/folders/${folderId}`,
         {
           parentFolderId,
         },
@@ -405,7 +405,7 @@ const FileTree: React.FC = () => {
   const updateNoteFolder = async (noteId: number, folderId: number | null) => {
     try {
       await axios.put(
-        `http://localhost:5045/api/notes/f${noteId}`,
+        `https://localhost:7187/api/notes/f${noteId}`,
         {
           folderId,
         },
@@ -504,7 +504,7 @@ const FileTree: React.FC = () => {
 
       console.log("Updating privacy status for note:", note.id);
       const response = await axios.put(
-        `http://localhost:5045/api/notes/${note.id}/privacy`,
+        `https://localhost:7187/api/notes/${note.id}/privacy`,
         {},
         config
       );

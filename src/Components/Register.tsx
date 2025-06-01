@@ -22,7 +22,7 @@ const RegisterForm: React.FC = () => {
     }
 
     try {
-      await axios.post("http://localhost:5045/api/users", {
+      await axios.post("https://localhost:7187/api/users", {
         Username: username,
         Password: password,
         Email: email,
@@ -32,6 +32,7 @@ const RegisterForm: React.FC = () => {
       });
       setSuccess("Utilizador registado com successo!");
     } catch (error) {
+      console.log("Error registering user:", error);
       setError(
         "Falha ao registar utilizador, nome de utilizador ou email já em uso."
       );

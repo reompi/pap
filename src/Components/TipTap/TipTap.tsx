@@ -87,7 +87,7 @@ const TiptapEditor: React.FC = () => {
       console.log("Fetching note..."); // Log before axios call
       try {
         const response = await axios.get(
-          `http://localhost:5045/api/notes/${noteId}`
+          `https://localhost:7187/api/notes/${noteId}`
         );
         console.log("oi");
         const { heading, body } = response.data;
@@ -147,7 +147,7 @@ const TiptapEditor: React.FC = () => {
       if (noteId) {
         try {
           await axios.get(
-            `http://localhost:5045/api/notes/checkOwnership/${noteId}`,
+            `https://localhost:7187/api/notes/checkOwnership/${noteId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -167,7 +167,7 @@ const TiptapEditor: React.FC = () => {
 
       // If the note does not belong to the user or doesn't exist, POST to create a new note
       if (!isUserNote) {
-        await axios.post("http://localhost:5045/api/notes", postPayload, {
+        await axios.post("https://localhost:7187/api/notes", postPayload, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -179,7 +179,7 @@ const TiptapEditor: React.FC = () => {
         const customId = `n${noteId}`; // Use custom ID format
 
         await axios.put(
-          `http://localhost:5045/api/notes/${customId}`,
+          `https://localhost:7187/api/notes/${customId}`,
           putPayload,
           {
             headers: {

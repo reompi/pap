@@ -45,7 +45,7 @@ const Feed: React.FC = () => {
   ) => {
     try {
       await axios.post(
-        `http://localhost:5045/api/notes/${noteId}/like`,
+        `https://localhost:7187/api/notes/${noteId}/like`,
         {},
         {
           headers: {
@@ -80,7 +80,7 @@ const Feed: React.FC = () => {
   ) => {
     try {
       await axios.post(
-        `http://localhost:5045/api/notes/${noteId}/dislike`,
+        `https://localhost:7187/api/notes/${noteId}/dislike`,
         {},
         {
           headers: {
@@ -112,7 +112,7 @@ const Feed: React.FC = () => {
   const fetchNotes = async (query = "") => {
     try {
       const response = await axios.get(
-        `http://localhost:5045/api/Notes/feed?search=${query}`,
+        `https://localhost:7187/api/Notes/feed?search=${query}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -304,7 +304,7 @@ const Feed: React.FC = () => {
           </div>
         ))
       ) : (
-        <p>No notes found.</p>
+        <p>Nenhuma encontrada.</p>
       )}
     </div>
   );
