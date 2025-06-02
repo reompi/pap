@@ -121,16 +121,19 @@ const Feed: React.FC = () => {
           },
         }
       );
-  
+
       // Fetch usernames for each note
-      if (!response.data || !Array.isArray(response.data) || response.data.length === 0) {
+      if (
+        !response.data ||
+        !Array.isArray(response.data) ||
+        response.data.length === 0
+      ) {
         setNotes([]);
         return;
       }
       const notesData = await Promise.all(
         response.data.map(async (note: any) => {
-          console.log("Note:", note);
-          let userId = note.userId; // Default to 0 
+          let userId = note.userId; // Default to 0
           let username = "";
           try {
             const userRes = await axios.get(

@@ -95,7 +95,6 @@ const TiptapEditor: React.FC = () => {
         setIsLoaded(true);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          console.error("Server responded with:", error.response?.data);
         }
       }
     };
@@ -192,7 +191,6 @@ const TiptapEditor: React.FC = () => {
       setError("");
       setTimeout(() => setSuccess(""), 4000);
     } catch (error) {
-      console.error("Error saving note:", error);
       setError("Falha ao guardar!");
       setSuccess("");
       setTimeout(() => setError(""), 4000);

@@ -69,7 +69,6 @@ const FileTree: React.FC = () => {
         }
       );
 
-
       const nestedFolders = nestFolders(
         folderResponse.data.folders || [],
         notesResponse.data.notes || [] // Accessing the notes array here
@@ -82,7 +81,6 @@ const FileTree: React.FC = () => {
       setError("");
     } catch (err) {
       setError("Falha ao buscar pastas e anotações.");
-      console.error(err);
     }
   };
 
@@ -208,7 +206,6 @@ const FileTree: React.FC = () => {
       // Refetch folders and notes after creating a note
       await fetchFoldersAndNotes();
     } catch (error) {
-      console.error("Error creating note:", error);
       setError("Falha ao criar nota.");
     }
   };
@@ -248,35 +245,39 @@ const FileTree: React.FC = () => {
 
       // Refetch folders and notes after creating a folder
       await fetchFoldersAndNotes();
-    } catch (error) {
-      console.error("Error creating folder:", error);
-    }
+    } catch (error) {}
   };
 
   const handleDeleteItem = async () => {
-    const confirmDelete = window.confirm(
-      "Tem a certeza que quer apagar?"
-    );
+    const confirmDelete = window.confirm("Tem a certeza que quer apagar?");
     if (!confirmDelete) return;
 
     try {
       if (selectedFolder !== null) {
         await axios.delete(
-          `https://localhost:7187/api/folders/${selectedFolder.folderId}`
+          `https://localhost:7187/api/folders/${selectedFolder.folderId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSelectedFolder(null);
       } else if (selectedItem !== null) {
         await axios.delete(
-          `https://localhost:7187/api/notes/${selectedItem.id}`
+          `https://localhost:7187/api/notes/${selectedItem.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setSelectedItem(null);
       }
 
       // Refetch folders and notes after deleting an item
       await fetchFoldersAndNotes();
-    } catch (error) {
-      console.error("Error deleting item:", error);
-    }
+    } catch (error) {}
   };
 
   const handleNoteDoubleClick = (note: Note) => {
@@ -395,9 +396,7 @@ const FileTree: React.FC = () => {
           },
         }
       );
-    } catch (error) {
-      console.error("Error updating folder parent:", error);
-    }
+    } catch (error) {}
   };
 
   const updateNoteFolder = async (noteId: number, folderId: number | null) => {
@@ -413,9 +412,7 @@ const FileTree: React.FC = () => {
           },
         }
       );
-    } catch (error) {
-      console.error("Error updating note folder:", error);
-    }
+    } catch (error) {}
   };
 
   const getAllFolderIds = (folderList: Folder[]): number[] => {
@@ -508,9 +505,7 @@ const FileTree: React.FC = () => {
       // You may want to update the note's privacy state locally here, if necessary
       note.private = response.data.private; // Assuming the response includes the updated privacy status
       await fetchFoldersAndNotes();
-    } catch (error) {
-      console.error("Error updating privacy status", error);
-    }
+    } catch (error) {}
   };
 
   return (

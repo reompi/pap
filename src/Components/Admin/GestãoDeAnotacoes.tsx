@@ -36,7 +36,6 @@ const GestaoDeAnotacoes: React.FC = () => {
       setNotes(notes.filter((note) => note.id !== noteId)); // Remove deleted note from state
     } catch (error) {
       setError("Falha ao apagar.");
-      console.error(error);
     }
   };
 
@@ -63,9 +62,9 @@ const GestaoDeAnotacoes: React.FC = () => {
           <Link to="/admin/anotacoes" className="text-blue-900 hover:underline">
             Anotações
           </Link>
-                          <Link to="/feed" className="text-blue-600 hover:underline">
-                    App
-                  </Link>
+          <Link to="/feed" className="text-blue-600 hover:underline">
+            App
+          </Link>
         </nav>
       </div>
       <h2 className="text-xl font-semibold mb-2">Gestão de anotações</h2>
@@ -81,9 +80,7 @@ const GestaoDeAnotacoes: React.FC = () => {
         </thead>
         <tbody>
           {notes.map((note) => (
-            <tr
-              key={note.id}
-            >
+            <tr key={note.id}>
               <td className="border px-4 py-2">{note.id}</td>
               <td className="border px-4 py-2">{note.heading}</td>
               <td className="border px-4 py-2">{note.userId}</td>

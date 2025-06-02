@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 const AdminPage: React.FC = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [error, setError] = useState<string>("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<any>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -25,46 +27,69 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const handleDeleteUser = async (userId: number) => {
+  const handleDeleteUser = (user: any) => {
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteUser = async (deleteNotes: boolean) => {
+    if (!userToDelete) return;
+    try {
+      const token = localStorage.getItem("token");
+      if (deleteNotes) {
+        try {
+          await axios.delete(
+            `https://localhost:7187/api/notes/user/${userToDelete.id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+        } catch {}
+        try {
+          await axios.delete(
+            `https://localhost:7187/api/Folders/user/${userToDelete.id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+        } catch {}
+      }
+      await axios.delete(
+        `https://localhost:7187/api/Users/${userToDelete.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setUsers(users.filter((user) => user.id !== userToDelete.id));
+      setShowDeleteModal(false);
+      setUserToDelete(null);
+    } catch (error) {
+      setError("Falha ao apagar utilizador ou anotações.");
+      setShowDeleteModal(false);
+      setUserToDelete(null);
+      console.error(error);
+    }
+  };
+
+  const handleUserAdmin = async (userId: number) => {
     const confirmed = window.confirm(
-      "Tem a certeza que quer apagar esta anotação?"
+      "Tem a certeza que quer tornar este utilizador administrador?"
     );
     if (!confirmed) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`https://localhost:7187/api/Users/${userId}`, {
+      await axios.put(`https://localhost:7187/api/Users/${userId}/makeAdmin`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setUsers(users.filter((user) => user.id !== userId)); // Remove deleted user from state
+      // Optionally, you can refetch users or update the state to reflect the change
+      fetchUsers();
     } catch (error) {
-      setError("Falha ao apagar utilizador.");
+      setError("Falhar ao fazer utiliador admin.");
       console.error(error);
     }
   };
-const handleUserAdmin = async (userId: number) => {
-  const confirmed = window.confirm(
-    "Tem a certeza que quer tornar este utilizador administrador?"
-  );
-  if (!confirmed) return;
-  try {
-    const token = localStorage.getItem("token");
-    await axios.put(
-      `https://localhost:7187/api/Users/${userId}/makeAdmin`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    // Optionally, you can refetch users or update the state to reflect the change
-    fetchUsers();
-  } catch (error) {
-    setError("Falhar ao fazer utiliador admin.");
-    console.error(error);
-  }}
 
   return (
     <div className="container mx-auto p-4 bg-gray-100">
@@ -74,7 +99,7 @@ const handleUserAdmin = async (userId: number) => {
           {error}
         </p>
       )}
-       {/* Menu */}
+      {/* Menu */}
       <nav className="mb-4 flex space-x-4">
         <Link to="/" className="text-blue-600 hover:underline">
           Voltar
@@ -88,7 +113,7 @@ const handleUserAdmin = async (userId: number) => {
         <Link to="/admin/anotacoes" className="text-blue-600 hover:underline">
           Anotações
         </Link>
-                <Link to="/feed" className="text-blue-600 hover:underline">
+        <Link to="/feed" className="text-blue-600 hover:underline">
           App
         </Link>
       </nav>
@@ -111,7 +136,9 @@ const handleUserAdmin = async (userId: number) => {
               <td className="border px-4 py-2">{user.email}</td>
               <td className="border px-4 py-2">
                 {user.role === "admin" ? (
-                  <span className="font-semibold text-green-700">{user.role}</span>
+                  <span className="font-semibold text-green-700">
+                    {user.role}
+                  </span>
                 ) : (
                   <button
                     onClick={() => handleUserAdmin(user.id)}
@@ -124,7 +151,7 @@ const handleUserAdmin = async (userId: number) => {
               <td className="border px-4 py-2">
                 {user.role !== "admin" && (
                   <button
-                    onClick={() => handleDeleteUser(user.id)}
+                    onClick={() => handleDeleteUser(user)}
                     className="text-red-600 underline hover:text-red-800"
                   >
                     Apagar
@@ -135,6 +162,40 @@ const handleUserAdmin = async (userId: number) => {
           ))}
         </tbody>
       </table>
+      {/* Modal para apagar utilizador */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <p className="mb-4">
+              <br />
+              Deseja também apagar as anotações deste utilizador?
+            </p>
+            <div className="flex justify-end space-x-2">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setUserToDelete(null);
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={() => confirmDeleteUser(false)}
+              >
+                Não
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={() => confirmDeleteUser(true)}
+              >
+                Sim
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
